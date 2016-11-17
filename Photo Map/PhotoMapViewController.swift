@@ -65,10 +65,11 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
-        let annotation = MKPointAnnotation()
+        let annotation = PhotoAnnotation()
         let locationCoordinate = CLLocationCoordinate2D(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
         annotation.coordinate = locationCoordinate
-        annotation.title = "Picture!"
+        //annotation.title = "Picture!"
+        annotation.photo = capturedImage
         mapView.addAnnotation(annotation)
         self.navigationController?.popToViewController(self, animated: true)
     }
@@ -84,20 +85,21 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         }
         
         let imageView = annotationView?.leftCalloutAccessoryView as! UIImageView
-        imageView.image = UIImage(named: "camera")
+        //imageView.image = UIImage(named: "camera")
         
+        let resizeRenderImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+        resizeRenderImageView.layer.borderColor = UIColor.white.cgColor
+        resizeRenderImageView.layer.borderWidth = 3.0
+        resizeRenderImageView.contentMode = UIViewContentMode.scaleAspectFill
+        resizeRenderImageView.image = (annotation as? PhotoAnnotation)?.photo
+        
+        UIGraphicsBeginImageContext(resizeRenderImageView.frame.size)
+        resizeRenderImageView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let thumbnail = UIGraphicsGetImageFromCurrentImageContext()
+        imageView.image = thumbnail
+        UIGraphicsEndImageContext()
+        
+    
         return annotationView
     }
-/*
-    var resizeRenderImageView = UIImageView(frame: CGRectMake(0, 0, 45, 45))
-    resizeRenderImageView.layer.borderColor = UIColor.whiteColor().CGColor
-    resizeRenderImageView.layer.borderWidth = 3.0
-    resizeRenderImageView.contentMode = UIViewContentMode.ScaleAspectFill
-    resizeRenderImageView.image = (annotation as? PhotoAnnotation)?.photo
-    
-    UIGraphicsBeginImageContext(resizeRenderImageView.frame.size)
-    resizeRenderImageView.layer.renderInContext(UIGraphicsGetCurrentContext())
-    var thumbnail = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-*/
 }

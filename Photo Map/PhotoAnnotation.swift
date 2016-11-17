@@ -14,6 +14,8 @@ class PhotoAnnotation: NSObject, MKAnnotation {
     var photo: UIImage!
     
     var title: String? {
-        return "\(coordinate.latitude)"
+        get {
+            return "\(coordinate.latitude)"
+        }
     }
 }
